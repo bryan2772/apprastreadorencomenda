@@ -1,31 +1,68 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/screens/add_encomenda_screen.dart'; // Importa o pacote Flutter Material Design
+import '../models/encomenda.dart';
+import '../services/database_helper.dart';
+import 'add_encomenda_screen.dart';
 
-class HomeScreen extends StatelessWidget {
-  // A classe HomeScreen é um StatelessWidget, ou seja, não mantém estado interno.
+class HomeScreen extends StatefulWidget {
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  List<Encomenda> _encomendas = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _carregarEncomendas();
+  }
+
+  Future<void> _carregarEncomendas() async {
+    final encomendas = await DatabaseHelper.instance.listarEncomendas();
+    setState(() {
+      _encomendas = encomendas;
+    });
+  }
+
+  Future<void> _adicionarEncomenda() async {
+    final resultado = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => AddEncomendaScreen()),
+    );
+
+    if (resultado == true) {
+      _carregarEncomendas();
+    }
+  }
+
+  void _deletarEncomenda(int id) async {
+    await DatabaseHelper.instance.deletarEncomenda(id);
+    _carregarEncomendas();
+  }
+
   @override
   Widget build(BuildContext context) {
-    // O método build é responsável por construir a interface do usuário.
     return Scaffold(
-      // Scaffold é uma estrutura básica de layout do Material Design.
-      appBar: AppBar(
-        title: Text('Minhas Encomendas'), // Título da AppBar
-      ),
-      body: Center(
-        // O corpo da tela é centralizado.
-        child: Text('Nenhuma encomenda cadastrada.'), // Texto exibido quando não há encomendas
-      ),
+      appBar: AppBar(title: Text('Minhas Encomendas')),
+      body: _encomendas.isEmpty
+          ? Center(child: Text('Nenhuma encomenda cadastrada.'))
+          : ListView.builder(
+              itemCount: _encomendas.length,
+              itemBuilder: (context, index) {
+                final encomenda = _encomendas[index];
+                return ListTile(
+                  title: Text(encomenda.nome),
+                  subtitle: Text('Código: ${encomenda.codigoRastreio}'),
+                  trailing: IconButton(
+                    icon: Icon(Icons.delete, color: Colors.red),
+                    onPressed: () => _deletarEncomenda(encomenda.id!),
+                  ),
+                );
+              },
+            ),
       floatingActionButton: FloatingActionButton(
-        // Botão flutuante para adicionar uma nova encomenda
-        onPressed: () {
-          Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context)=> AddEncomendaScreen()),
-          );
-          // Aqui vamos adicionar a lógica para registrar uma nova encomenda
-          // Por exemplo, navegar para uma tela de cadastro ou abrir um diálogo.
-        },
-        child: Icon(Icons.add), // Ícone de "+" dentro do botão
+        onPressed: _adicionarEncomenda,
+        child: Icon(Icons.add),
       ),
     );
   }

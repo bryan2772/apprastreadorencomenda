@@ -1,43 +1,41 @@
 class Encomenda {
-  // Atributos da classe Encomenda
-  final String id; // Identificador único da encomenda
-  final String nome; // Nome da encomenda
-  final String codigoRastreio; // Código de rastreio da encomenda
-  final String transportadora; // Nome da transportadora responsável pela entrega
-  final String status; // Status atual da encomenda (ex: "Em trânsito", "Entregue")
-  final DateTime dataCriacao; // Data de criação da encomenda
+  final int? id; // Alterado para int? para permitir nulo no momento da inserção
+  final String nome;
+  final String codigoRastreio;
+  final String transportadora;
+  final String status;
+  final String dataCriacao;
 
-  // Construtor da classe Encomenda
   Encomenda({
-    required this.id, // Obrigatório passar o ID
-    required this.nome, // Obrigatório passar o nome
-    required this.codigoRastreio, // Obrigatório passar o código de rastreio
-    required this.transportadora, // Obrigatório passar a transportadora
-    required this.status, // Obrigatório passar o status
-    required this.dataCriacao, // Obrigatório passar a data de criação
+    this.id, // Pode ser nulo ao criar um novo registro
+    required this.nome,
+    required this.codigoRastreio,
+    required this.transportadora,
+    required this.status,
+    required this.dataCriacao,
   });
 
   // Método factory para criar uma instância de Encomenda a partir de um JSON
   factory Encomenda.fromJson(Map<String, dynamic> json) {
     return Encomenda(
-      id: json['id'], // Extrai o ID do JSON
-      nome: json['nome'], // Extrai o nome do JSON
-      codigoRastreio: json['codigoRastreio'], // Extrai o código de rastreio do JSON
-      transportadora: json['transportadora'], // Extrai a transportadora do JSON
-      status: json['status'], // Extrai o status do JSON
-      dataCriacao: DateTime.parse(json['dataCriacao']), // Converte a string de data para DateTime
+      id: json['id'] as int?, // Garante que o ID seja tratado como int
+      nome: json['nome'],
+      codigoRastreio: json['codigoRastreio'],
+      transportadora: json['transportadora'],
+      status: json['status'],
+      dataCriacao: json['dataCriacao'],
     );
   }
 
-  // Método para converter a instância de Encomenda para um JSON
+  // Método para converter uma instância de Encomenda em um JSON para o banco de dados
   Map<String, dynamic> toJson() {
     return {
-      'id': id, // Inclui o ID no JSON
-      'nome': nome, // Inclui o nome no JSON
-      'codigoRastreio': codigoRastreio, // Inclui o código de rastreio no JSON
-      'transportadora': transportadora, // Inclui a transportadora no JSON
-      'status': status, // Inclui o status no JSON
-      'dataCriacao': dataCriacao.toIso8601String(), // Converte a data para uma string no formato ISO 8601
+      'id': id, // O SQLite gerará automaticamente um ID se ele for nulo
+      'nome': nome,
+      'codigoRastreio': codigoRastreio,
+      'transportadora': transportadora,
+      'status': status,
+      'dataCriacao': dataCriacao,
     };
   }
 }
