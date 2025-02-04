@@ -1,6 +1,6 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
+//import 'package:path_provider/path_provider.dart';
 import '../models/encomenda.dart';
 
 
@@ -61,4 +61,16 @@ class DatabaseHelper {
     final db = await instance.database;
     return await db.delete('encomendas', where: 'id = ?', whereArgs: [id]);
   }
+
+  Future<int> atualizarStatus(int id, String novoStatus) async {
+    final db = await instance.database;
+    return await db.update(
+      'encomendas',
+      {'status': novoStatus},
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+
 }

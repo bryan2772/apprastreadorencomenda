@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/encomenda.dart';
 import '../services/database_helper.dart';
 import 'add_encomenda_screen.dart';
+import 'detalhes_encomenda_screen.dart'; // Adicione esta linha
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -57,7 +58,16 @@ class _HomeScreenState extends State<HomeScreen> {
                     icon: Icon(Icons.delete, color: Colors.red),
                     onPressed: () => _deletarEncomenda(encomenda.id!),
                   ),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => DetalhesEncomendaScreen(encomenda: encomenda)),
+                    ).then((_) {
+                      _carregarEncomendas(); // Recarrega a lista ao voltar da tela de detalhes
+                    });
+                  },
                 );
+
               },
             ),
       floatingActionButton: FloatingActionButton(

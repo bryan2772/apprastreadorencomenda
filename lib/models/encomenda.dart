@@ -1,19 +1,20 @@
 class Encomenda {
-  final int? id; // Alterado para int? para permitir nulo no momento da inserção
+  final int? id;
   final String nome;
   final String codigoRastreio;
   final String transportadora;
-  final String status;
+  String status; // Agora não é final
   final String dataCriacao;
 
   Encomenda({
-    this.id, // Pode ser nulo ao criar um novo registro
+    this.id,
     required this.nome,
     required this.codigoRastreio,
     required this.transportadora,
     required this.status,
     required this.dataCriacao,
   });
+
 
   // Método factory para criar uma instância de Encomenda a partir de um JSON
   factory Encomenda.fromJson(Map<String, dynamic> json) {
