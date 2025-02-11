@@ -94,14 +94,3 @@ Distribuído sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais det
 
 
 ---
-
-### Como Utilizar
-
-1. **Crie ou atualize o arquivo `README.md`** na raiz do seu projeto com o conteúdo acima (ou adaptado conforme o seu projeto).
-2. **Faça o commit e envie para o GitHub:**
-
-   ```bash
-   git add README.md
-   git commit -m "Adiciona README.md com informações do projeto"
-   git push
-   ```
