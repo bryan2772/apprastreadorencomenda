@@ -3,11 +3,13 @@ import '../models/encomenda.dart';
 import '../services/database_helper.dart';
 
 class AddEncomendaScreen extends StatefulWidget {
+  const AddEncomendaScreen({super.key});
+
   @override
-  _AddEncomendaScreenState createState() => _AddEncomendaScreenState();
+  AddEncomendaScreenState createState() => AddEncomendaScreenState();
 }
 
-class _AddEncomendaScreenState extends State<AddEncomendaScreen> {
+class AddEncomendaScreenState extends State<AddEncomendaScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nomeController = TextEditingController();
   final TextEditingController _codigoRastreioController = TextEditingController();
@@ -24,8 +26,11 @@ class _AddEncomendaScreenState extends State<AddEncomendaScreen> {
         dataCriacao: DateTime.now().toIso8601String(), // Converte para String
       );
 
-      await DatabaseHelper.instance.inserirEncomenda(novaEncomenda);
-      Navigator.pop(context, true); // Fecha a tela e retorna "true" para indicar atualização
+    await DatabaseHelper.instance.inserirEncomenda(novaEncomenda);//aguarda o término da inserção da encomenda no banco de dados antes de continuar para a próxima linha
+
+    if (!mounted) return; // Verifica se o widget ainda está na árvore
+
+    Navigator.pop(context, true); // Fecha a tela e retorna "true"
     }
   }
 

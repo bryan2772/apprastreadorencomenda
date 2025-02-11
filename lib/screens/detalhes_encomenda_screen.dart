@@ -6,13 +6,13 @@ import '../services/database_helper.dart';
 class DetalhesEncomendaScreen extends StatefulWidget {
   final Encomenda encomenda;
 
-  DetalhesEncomendaScreen({required this.encomenda});
+  const DetalhesEncomendaScreen({super.key, required this.encomenda});
 
   @override
-  _DetalhesEncomendaScreenState createState() => _DetalhesEncomendaScreenState();
+  DetalhesEncomendaScreenState createState() => DetalhesEncomendaScreenState();
 }
 
-class _DetalhesEncomendaScreenState extends State<DetalhesEncomendaScreen> {
+class DetalhesEncomendaScreenState extends State<DetalhesEncomendaScreen> {
   bool _isUpdating = false;
 
   Future<void> _atualizarStatus() async {
@@ -30,6 +30,8 @@ class _DetalhesEncomendaScreenState extends State<DetalhesEncomendaScreen> {
       // Atualizar no banco de dados
       await DatabaseHelper.instance.atualizarStatus(widget.encomenda.id!, novoStatus);
 
+      if (!mounted) return; // Verifica se o widget ainda está na árvore
+      
       // Mostra uma mensagem de sucesso e atualiza o estado local
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Status atualizado para "$novoStatus"')),

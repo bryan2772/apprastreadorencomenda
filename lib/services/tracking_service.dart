@@ -1,5 +1,3 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 
 class TrackingService {
   // Exemplo de endpoint fake. Você pode trocar pela API que escolher.
