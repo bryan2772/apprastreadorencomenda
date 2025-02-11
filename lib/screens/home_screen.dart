@@ -5,11 +5,13 @@ import 'add_encomenda_screen.dart';
 import 'detalhes_encomenda_screen.dart'; // Adicione esta linha
 
 class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key}); // Agora usa o super parameter diretamente
+
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  HomeScreenState createState() => HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class HomeScreenState extends State<HomeScreen> {
   List<Encomenda> _encomendas = [];
 
   @override
