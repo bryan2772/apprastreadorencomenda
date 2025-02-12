@@ -16,7 +16,17 @@ Um aplicativo mobile desenvolvido em Flutter para gerenciar e rastrear encomenda
 - **SQLite:** Banco de dados local.
 - **sqflite / sqflite_common_ffi:** Gerenciamento do banco de dados.
 - **HTTP:** Requisições para simular ou integrar a uma API de rastreamento.
-- **Provider (ou outro gerenciador de estado, se for utilizado):** Gerenciamento de estado (no exemplo inicial não implementado, mas pode ser evoluído).
+- **Provider:** Gerenciamento de estado (no exemplo inicial não implementado, mas pode ser evoluído).
+  
+## Serviços de Terceiros
+
+- API de Rastreamento de Encomendas dos Correios - Link&Track
+  
+  - link para o site oficial: https://linketrack.com.
+  
+  - Para mais informações acesse:  https://github.com/chipytux/correiosApi
+  
+      
 
 ## Estrutura do Projeto
 
@@ -32,13 +42,15 @@ Um aplicativo mobile desenvolvido em Flutter para gerenciar e rastrear encomenda
 - Se for executar no Linux/desktop, é necessário instalar a biblioteca SQLite:
   - **Ubuntu/Debian:** `sudo apt update && sudo apt install libsqlite3-dev`
   - **Outras distribuições:** Consulte a documentação da sua distro para instalar o `sqlite3`.
+- Java 17 ou superior.
+- Android SDK. 
 
 ## Instalação
 
 1. **Clone o repositório:**
 
    ```bash
-   git clone https://github.com/seu-usuario/rastreamento_flutter.git
+   git clone https://github.com/bryan2772/apprastreadorencomenda.git
    cd rastreamento_flutter
    ```
 
