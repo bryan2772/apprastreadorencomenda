@@ -14,8 +14,12 @@ class AddEncomendaScreenState extends State<AddEncomendaScreen> {
   final TextEditingController _nomeController = TextEditingController();
   final TextEditingController _codigoRastreioController = TextEditingController();
   final TextEditingController _transportadoraController = TextEditingController();
+  bool _isUpdating = false;
 
   void _salvarEncomenda() async {
+    setState(() {
+      _isUpdating = true;
+    });
     if (_formKey.currentState!.validate()) {
       final novaEncomenda = Encomenda(
         id: DateTime.now().millisecondsSinceEpoch, 
@@ -32,6 +36,7 @@ class AddEncomendaScreenState extends State<AddEncomendaScreen> {
 
     Navigator.pop(context, true); // Fecha a tela e retorna "true"
     }
+    
   }
 
   @override
@@ -60,10 +65,13 @@ class AddEncomendaScreenState extends State<AddEncomendaScreen> {
                 validator: (value) => value!.isEmpty ? 'Campo obrigatório' : null,
               ),
               SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _salvarEncomenda,
-                child: Text('Salvar'),
-              ),
+              _isUpdating
+              ? CircularProgressIndicator()
+                : ElevatedButton(
+                    onPressed: _salvarEncomenda,
+                    child: Text('Salvar'),
+                  ),
+              
             ],
           ),
         ),

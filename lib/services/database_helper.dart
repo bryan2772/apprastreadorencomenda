@@ -43,6 +43,7 @@ class DatabaseHelper {
 
   Future<int> inserirEncomenda(Encomenda encomenda) async {
     final db = await instance.database;
+    //await Future.delayed(Duration(seconds: 80));
     return await db.insert(
       'encomendas',
       encomenda.toJson(),
