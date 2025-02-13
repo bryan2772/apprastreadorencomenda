@@ -16,7 +16,7 @@ void main() async {
     // Configuração para Android e iOS (sqflite padrão)
     databaseFactory = databaseFactory;
   }
-  await dotenv.load(fileName: "/mnt/nvme0n1p2/projetos/apprastreio/flutter_application_1/.env"); // Carrega o arquivo .env
+  await dotenv.load(fileName: ".env"); // Carrega o arquivo .env
   runApp(MyApp());
 }
 
