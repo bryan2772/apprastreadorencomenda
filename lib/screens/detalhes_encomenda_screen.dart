@@ -5,14 +5,13 @@ import '../services/database_helper.dart';
 
 class DetalhesEncomendaScreen extends StatefulWidget {
   final Encomenda encomenda;
-
-  DetalhesEncomendaScreen({required this.encomenda});
+  const DetalhesEncomendaScreen({required this.encomenda,super.key});
 
   @override
-  _DetalhesEncomendaScreenState createState() => _DetalhesEncomendaScreenState();
+  DetalhesEncomendaScreenState createState() => DetalhesEncomendaScreenState();
 }
 
-class _DetalhesEncomendaScreenState extends State<DetalhesEncomendaScreen> {
+class DetalhesEncomendaScreenState extends State<DetalhesEncomendaScreen> {
   bool _isUpdating = false;
   late Encomenda _encomenda; // Cópia local da encomenda para permitir atualizações
   List<dynamic> _eventos = []; // Lista de eventos de rastreamento
@@ -34,6 +33,7 @@ class _DetalhesEncomendaScreenState extends State<DetalhesEncomendaScreen> {
         _eventos = dados['eventos'] ?? [];
       });
     } catch (e) {
+      if (!mounted) return; // Verifica se o widget ainda está na árvore
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Erro ao carregar eventos: $e')),
       );
@@ -65,10 +65,12 @@ class _DetalhesEncomendaScreenState extends State<DetalhesEncomendaScreen> {
         });
 
         // Mostra uma mensagem de sucesso
+        if (!mounted) return; // Verifica se o widget ainda está na árvore
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Status atualizado para "$novoStatus"')),
         );
       } else {
+        if (!mounted) return; // Verifica se o widget ainda está na árvore
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Nenhum evento encontrado para este código de rastreio.')),
         );

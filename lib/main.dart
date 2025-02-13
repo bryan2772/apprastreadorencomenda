@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 //import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'dart:io';
-
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'screens/home_screen.dart';
 
 void main() async {
@@ -16,7 +16,7 @@ void main() async {
     // Configuração para Android e iOS (sqflite padrão)
     databaseFactory = databaseFactory;
   }
-
+  await dotenv.load(fileName: "/mnt/nvme0n1p2/projetos/apprastreio/flutter_application_1/.env"); // Carrega o arquivo .env
   runApp(MyApp());
 }
 

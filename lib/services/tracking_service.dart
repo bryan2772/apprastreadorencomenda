@@ -1,13 +1,18 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+//import 'package:flutter_config/flutter_config.dart';
 
 class TrackingService {
   // URL base da API do Linketrack
+  
   final String _baseUrl = 'https://api.linketrack.com/track/json';
+  final String _user = dotenv.get('LINKETRACK_USER'); // Acessa a variável de ambiente
+  final String _token = dotenv.get('LINKETRACK_TOKEN'); // Acessa a variável de ambiente
 
   // Dados de autenticação (substitua pelo seu usuário e token)
-  final String _user = 'teste'; // Substitua pelo seu usuário
-  final String _token = '1abcd00b2731640e886fb41a8a9671ad1434c599dbaa0a0de9a5aa619f29a83f'; // Substitua pelo seu token
+  //final String _user = FlutterConfig.get('LINKETRACK_USER');
+  //final String _token = FlutterConfig.get('LINKETRACK_TOKEN');
 
   // Método para buscar o status de rastreamento
   Future<Map<String, dynamic>> buscarStatus(String codigoRastreio) async {
