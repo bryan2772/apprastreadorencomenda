@@ -49,9 +49,9 @@ class ApiService {
     final url = Uri.parse('$baseUrl/encomendas/$remoteId');
     final response = await http.delete(url);
 
-    print('Tentando excluir: $url');
-    print('Código de status: ${response.statusCode}');
-    print('Resposta do servidor: ${response.body}');
+    //print('Tentando excluir: $url');
+    //print('Código de status: ${response.statusCode}');
+    //print('Resposta do servidor: ${response.body}');
 
     if (response.statusCode != 200) {
       throw Exception(

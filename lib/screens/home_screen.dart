@@ -63,11 +63,13 @@ class HomeScreenState extends State<HomeScreen> {
     if (e.toString().contains("404")) {
       // A encomenda não existe mais no servidor, então exclua localmente também
       await DatabaseHelper.instance.deletarEncomenda(encomenda.id!);
+      if (!mounted) return; // 🔍 Verifica se o widget ainda está na árvore antes de usar o contexto
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Encomenda excluída localmente, pois não foi encontrada no servidor.')),
       );
       _carregarEncomendas();
     } else {
+      if (!mounted) return; // 🔍 Verifica se o widget ainda está na árvore antes de usar o contexto
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Erro ao excluir encomenda: $e')),
       );
