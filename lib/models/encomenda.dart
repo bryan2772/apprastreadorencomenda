@@ -3,8 +3,9 @@ class Encomenda {
   final String nome;
   final String codigoRastreio;
   final String transportadora;
-  String status; // Agora não é final
+  String status; // se precisar ser mutável
   final String dataCriacao;
+  int? remoteId;  // Adicione essa propriedade
 
   Encomenda({
     this.id,
@@ -13,30 +14,30 @@ class Encomenda {
     required this.transportadora,
     required this.status,
     required this.dataCriacao,
+    this.remoteId, // pode ser nulo se ainda não sincronizado
   });
 
-
-  // Método factory para criar uma instância de Encomenda a partir de um JSON
   factory Encomenda.fromJson(Map<String, dynamic> json) {
     return Encomenda(
-      id: json['id'] as int?, // Garante que o ID seja tratado como int
+      id: json['id'] as int?,
       nome: json['nome'],
       codigoRastreio: json['codigoRastreio'],
       transportadora: json['transportadora'],
       status: json['status'],
       dataCriacao: json['dataCriacao'],
+      remoteId: json['remoteId'] as int?, // Lê o remoteId, se existir
     );
   }
 
-  // Método para converter uma instância de Encomenda em um JSON para o banco de dados
   Map<String, dynamic> toJson() {
     return {
-      'id': id, // O SQLite gerará automaticamente um ID se ele for nulo
+      'id': id,
       'nome': nome,
       'codigoRastreio': codigoRastreio,
       'transportadora': transportadora,
       'status': status,
       'dataCriacao': dataCriacao,
+      'remoteId': remoteId, // Inclui o remoteId no JSON
     };
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/encomenda.dart';
 import '../services/database_helper.dart';
+import '../services/api_service.dart'; // Importa o ApiService
 
 class AddEncomendaScreen extends StatefulWidget {
   const AddEncomendaScreen({super.key});
@@ -16,11 +17,14 @@ class AddEncomendaScreenState extends State<AddEncomendaScreen> {
   final TextEditingController _transportadoraController = TextEditingController();
   bool _isUpdating = false;
 
+  final ApiService _apiService = ApiService(); // Instância do serviço da API
+
   void _salvarEncomenda() async {
-    setState(() {
-      _isUpdating = true;
-    });
     if (_formKey.currentState!.validate()) {
+      setState(() {
+        _isUpdating = true;
+      });
+
       final novaEncomenda = Encomenda(
         id: DateTime.now().millisecondsSinceEpoch, 
         nome: _nomeController.text,
@@ -30,13 +34,34 @@ class AddEncomendaScreenState extends State<AddEncomendaScreen> {
         dataCriacao: DateTime.now().toIso8601String(), // Converte para String
       );
 
-    await DatabaseHelper.instance.inserirEncomenda(novaEncomenda);//aguarda o término da inserção da encomenda no banco de dados antes de continuar para a próxima linha
+      // 1️⃣ Salva a encomenda localmente primeiro
+      int localId = await DatabaseHelper.instance.inserirEncomenda(novaEncomenda);
 
-    if (!mounted) return; // Verifica se o widget ainda está na árvore
+      // 2️⃣ Tenta enviar a encomenda para o servidor
+      try {
+        int? remoteId = await _apiService.inserirEncomenda(novaEncomenda);
+        
+          // 3️⃣ Criar uma nova encomenda com o remoteId atualizado
+          final encomendaAtualizada = Encomenda(
+            id: localId,
+            remoteId: remoteId,
+            nome: novaEncomenda.nome,
+            codigoRastreio: novaEncomenda.codigoRastreio,
+            transportadora: novaEncomenda.transportadora,
+            status: novaEncomenda.status,
+            dataCriacao: novaEncomenda.dataCriacao,
+          );
 
-    Navigator.pop(context, true); // Fecha a tela e retorna "true"
+          await DatabaseHelper.instance.atualizarRemoteId(encomendaAtualizada);
+        
+      } catch (e) {
+        debugPrint("Falha ao sincronizar encomenda com o servidor: $e");
+      }
+
+      if (!mounted) return; // Verifica se o widget ainda está na árvore
+
+      Navigator.pop(context, true); // Fecha a tela e retorna "true"
     }
-    
   }
 
   @override
@@ -66,12 +91,11 @@ class AddEncomendaScreenState extends State<AddEncomendaScreen> {
               ),
               SizedBox(height: 20),
               _isUpdating
-              ? CircularProgressIndicator()
+                ? CircularProgressIndicator()
                 : ElevatedButton(
                     onPressed: _salvarEncomenda,
                     child: Text('Salvar'),
                   ),
-              
             ],
           ),
         ),
