@@ -16,6 +16,7 @@ class ApiService {
     }
   }
 
+//test
   Future<int> inserirEncomenda(Encomenda encomenda) async {
     final url = Uri.parse('$baseUrl/encomendas');
     final response = await http.post(
