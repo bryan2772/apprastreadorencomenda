@@ -2,53 +2,13 @@ import 'package:flutter/material.dart';
 import '../models/encomenda.dart';
 import '../services/database_helper.dart';
 import 'add_encomenda_screen.dart';
-import 'detalhes_encomenda_screen.dart'; // Adicione esta linha
+import 'detalhes_encomenda_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key}); // Agora usa o super parameter diretamente
+  const HomeScreen({super.key});
 
   @override
   HomeScreenState createState() => HomeScreenState();
-}
-
-class _ResumoCard extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final String value;
-  final Color color;
-
-  const _ResumoCard({
-    required this.icon,
-    required this.label,
-    required this.value,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      elevation: 3,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 12),
-        child: Column(
-          children: [
-            CircleAvatar(
-              backgroundColor: color.withOpacity(0.2),
-              child: Icon(icon, color: color),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              value,
-              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 4),
-            Text(label, style: TextStyle(color: Colors.grey.shade700)),
-          ],
-        ),
-      ),
-    );
-  }
 }
 
 class HomeScreenState extends State<HomeScreen> {
@@ -109,22 +69,29 @@ class HomeScreenState extends State<HomeScreen> {
         leading: Builder(
           builder: (context) {
             return IconButton(
-              icon: const Icon(Icons.menu),
+              icon: const Icon(
+                Icons.menu,
+                color: Color.fromARGB(255, 255, 255, 255),
+              ),
               onPressed: () {
                 Scaffold.of(context).openDrawer();
               },
             );
           },
         ),
-        title: Text('Minhas Encomendas'),
+        title: Text(
+          'Minhas Encomendas',
+          style: theme.textTheme.titleLarge?.copyWith(
+            color:
+                const Color.fromARGB(255, 255, 255, 255), // Adicione esta linha
+          ),
+        ),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.add_alert),
             tooltip: 'Show Snackbar',
             onPressed: () {
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(
+              ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('notificaçoes ativas')));
             },
           ),
@@ -135,7 +102,6 @@ class HomeScreenState extends State<HomeScreen> {
       ),
       drawer: Drawer(
         child: ListView(
-          // Important: Remove any padding from the ListView.
           padding: EdgeInsets.zero,
           children: [
             const DrawerHeader(
@@ -145,27 +111,18 @@ class HomeScreenState extends State<HomeScreen> {
             ListTile(
               title: const Text('Home'),
               onTap: () {
-                // Update the state of the app.
-                // ...
-                // Then close the drawer
                 Navigator.pop(context);
               },
             ),
             ListTile(
               title: const Text('Configuraçoes'),
               onTap: () {
-                // Update the state of the app.
-                // ...
-                // Then close the drawer
                 Navigator.pop(context);
               },
             ),
             ListTile(
               title: const Text('arquivados'),
               onTap: () {
-                // Update the state of the app.
-                // ...
-                // Then close the drawer
                 Navigator.pop(context);
               },
             ),
@@ -256,7 +213,18 @@ class HomeScreenState extends State<HomeScreen> {
                             style: TextStyle(
                                 color: Colors.grey.shade700, height: 1.4),
                           ),
-                          trailing: const Icon(Icons.chevron_right),
+                          // CORREÇÃO: Removido o trailing duplicado
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                icon: Icon(Icons.delete, color: Colors.red),
+                                onPressed: () =>
+                                    _deletarEncomenda(encomenda.id!),
+                              ),
+                              Icon(Icons.chevron_right, color: Colors.grey),
+                            ],
+                          ),
                           onTap: () => _abrirDetalhes(encomenda),
                         ),
                       ),
@@ -270,8 +238,58 @@ class HomeScreenState extends State<HomeScreen> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _adicionarEncomenda,
         backgroundColor: Colors.deepPurple,
-        label: const Text('Adicionar'),
-        icon: const Icon(Icons.add),
+        label: const Text(
+          'Adicionar',
+          style: TextStyle(
+            color: Color.fromARGB(
+                255, 255, 255, 255), // Já está cinza, mas pode alterar
+          ),
+        ),
+        icon: const Icon(
+          Icons.add,
+          color: Color.fromARGB(255, 255, 255, 255),
+        ),
+      ),
+    );
+  }
+}
+
+// Classe auxiliar movida para fora ou mantida como interna
+class _ResumoCard extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String value;
+  final Color color;
+
+  const _ResumoCard({
+    required this.icon,
+    required this.label,
+    required this.value,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      elevation: 3,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 12),
+        child: Column(
+          children: [
+            CircleAvatar(
+              backgroundColor: color.withOpacity(0.2),
+              child: Icon(icon, color: color),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              value,
+              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 4),
+            Text(label, style: TextStyle(color: Colors.grey.shade700)),
+          ],
+        ),
       ),
     );
   }
