@@ -4,7 +4,7 @@ class Encomenda {
   final String codigoRastreio;
   final String transportadora;
   String status; // Agora não é final
-  final String dataCriacao;
+  final String? dataCriacao;
 
   Encomenda({
     this.id,
@@ -14,7 +14,6 @@ class Encomenda {
     required this.status,
     required this.dataCriacao,
   });
-
 
   // Método factory para criar uma instância de Encomenda a partir de um JSON
   factory Encomenda.fromJson(Map<String, dynamic> json) {

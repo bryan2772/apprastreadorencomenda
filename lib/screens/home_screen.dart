@@ -58,10 +58,10 @@ class HomeScreenState extends State<HomeScreen> {
     final theme = Theme.of(context);
 
     final totalEmTransito = _encomendas
-        .where((e) => e.status?.toLowerCase().contains('trânsito') ?? false)
+        .where((e) => e.status.toLowerCase().contains('trânsito'))
         .length;
     final totalEntregues = _encomendas
-        .where((e) => e.status?.toLowerCase().contains('entregue') ?? false)
+        .where((e) => e.status.toLowerCase().contains('entregue'))
         .length;
 
     return Scaffold(
@@ -209,7 +209,7 @@ class HomeScreenState extends State<HomeScreen> {
                             style: const TextStyle(fontWeight: FontWeight.w600),
                           ),
                           subtitle: Text(
-                            'Código: ${encomenda.codigoRastreio}\nStatus: ${encomenda.status ?? 'Desconhecido'}',
+                            'Código: ${encomenda.codigoRastreio}\nStatus: ${encomenda.status}',
                             style: TextStyle(
                                 color: Colors.grey.shade700, height: 1.4),
                           ),
@@ -278,7 +278,7 @@ class _ResumoCard extends StatelessWidget {
         child: Column(
           children: [
             CircleAvatar(
-              backgroundColor: color.withOpacity(0.2),
+              backgroundColor: color.withValues(alpha: 0.2),
               child: Icon(icon, color: color),
             ),
             const SizedBox(height: 8),

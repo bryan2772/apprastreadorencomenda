@@ -99,21 +99,45 @@ class DetalhesEncomendaScreenState extends State<DetalhesEncomendaScreen> {
 
   Color _getStatusColor(String status) {
     final lowerStatus = status.toLowerCase();
-    if (lowerStatus.contains('entregue')) return Colors.green;
-    if (lowerStatus.contains('trânsito') || lowerStatus.contains('transito'))
+
+    if (lowerStatus.contains('entregue')) {
+      return Colors.green;
+    }
+
+    if (lowerStatus.contains('trânsito') || lowerStatus.contains('transito')) {
       return Colors.orange;
-    if (lowerStatus.contains('postado')) return Colors.blue;
-    if (lowerStatus.contains('aguardando')) return Colors.grey;
+    }
+
+    if (lowerStatus.contains('postado')) {
+      return Colors.blue;
+    }
+
+    if (lowerStatus.contains('aguardando')) {
+      return Colors.grey;
+    }
+
     return Colors.deepPurple;
   }
 
   IconData _getStatusIcon(String status) {
     final lowerStatus = status.toLowerCase();
-    if (lowerStatus.contains('entregue')) return Icons.done_all;
-    if (lowerStatus.contains('trânsito') || lowerStatus.contains('transito'))
+
+    if (lowerStatus.contains('entregue')) {
+      return Icons.done_all;
+    }
+
+    if (lowerStatus.contains('trânsito') || lowerStatus.contains('transito')) {
       return Icons.local_shipping;
-    if (lowerStatus.contains('postado')) return Icons.assignment_turned_in;
-    if (lowerStatus.contains('aguardando')) return Icons.schedule;
+    }
+
+    if (lowerStatus.contains('postado')) {
+      return Icons.assignment_turned_in;
+    }
+
+    if (lowerStatus.contains('aguardando')) {
+      return Icons.schedule;
+    }
+
     return Icons.local_mall;
   }
 
@@ -178,10 +202,10 @@ class DetalhesEncomendaScreenState extends State<DetalhesEncomendaScreen> {
               children: [
                 CircleAvatar(
                   backgroundColor:
-                      _getStatusColor(_encomenda.status ?? '').withOpacity(0.2),
+                      _getStatusColor(_encomenda.status).withValues(alpha: 0.2),
                   child: Icon(
-                    _getStatusIcon(_encomenda.status ?? ''),
-                    color: _getStatusColor(_encomenda.status ?? ''),
+                    _getStatusIcon(_encomenda.status),
+                    color: _getStatusColor(_encomenda.status),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -222,8 +246,8 @@ class DetalhesEncomendaScreenState extends State<DetalhesEncomendaScreen> {
             ),
             const SizedBox(height: 12),
             _StatusRow(
-              status: _encomenda.status ?? 'Desconhecido',
-              color: _getStatusColor(_encomenda.status ?? ''),
+              status: _encomenda.status,
+              color: _getStatusColor(_encomenda.status),
             ),
           ],
         ),
@@ -291,7 +315,7 @@ class DetalhesEncomendaScreenState extends State<DetalhesEncomendaScreen> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
-                color: Colors.deepPurple.withOpacity(0.1),
+                color: Colors.deepPurple.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Text(
@@ -459,9 +483,9 @@ class _StatusRow extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
+                  color: color.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: color.withOpacity(0.3)),
+                  border: Border.all(color: color.withValues(alpha: 0.3)),
                 ),
                 child: Text(
                   status,
@@ -496,7 +520,7 @@ class _EventoCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
       ),
       elevation: 2,
-      color: isFirst ? Colors.deepPurple.withOpacity(0.05) : Colors.white,
+      color: isFirst ? Colors.deepPurple.withValues(alpha: 0.05) : Colors.white,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(

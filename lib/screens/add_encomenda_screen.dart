@@ -44,6 +44,7 @@ class AddEncomendaScreenState extends State<AddEncomendaScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: Text(
           'Nova Encomenda',
@@ -66,80 +67,83 @@ class AddEncomendaScreenState extends State<AddEncomendaScreen> {
           padding: const EdgeInsets.all(16.0),
           child: Form(
             key: _formKey,
-            child: Column(
-              children: [
-                // Card do formulário
-                Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  elevation: 3,
-                  child: Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Column(
-                      children: [
-                        _buildTextField(
-                          controller: _nomeController,
-                          label: 'Nome da Encomenda',
-                          icon: Icons.local_mall,
-                          hintText: 'Ex: Celular, Livro, Roupas...',
-                        ),
-                        const SizedBox(height: 20),
-                        _buildTextField(
-                          controller: _codigoRastreioController,
-                          label: 'Código de Rastreamento',
-                          icon: Icons.qr_code,
-                          hintText: 'Ex: AB123456789BR',
-                        ),
-                        const SizedBox(height: 20),
-                        _buildTextField(
-                          controller: _transportadoraController,
-                          label: 'Transportadora',
-                          icon: Icons.local_shipping,
-                          hintText: 'Ex: Correios, FedEx, UPS...',
-                        ),
-                      ],
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Card do formulário
+                  Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    elevation: 3,
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        children: [
+                          _buildTextField(
+                            controller: _nomeController,
+                            label: 'Nome da Encomenda',
+                            icon: Icons.local_mall,
+                            hintText: 'Ex: Celular, Livro, Roupas...',
+                          ),
+                          const SizedBox(height: 20),
+                          _buildTextField(
+                            controller: _codigoRastreioController,
+                            label: 'Código de Rastreamento',
+                            icon: Icons.qr_code,
+                            hintText: 'Ex: AB123456789BR',
+                          ),
+                          const SizedBox(height: 20),
+                          _buildTextField(
+                            controller: _transportadoraController,
+                            label: 'Transportadora',
+                            icon: Icons.local_shipping,
+                            hintText: 'Ex: Correios, FedEx, UPS...',
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 30),
+                  const SizedBox(height: 30),
 
-                // Botão de salvar
-                _isUpdating
-                    ? CircularProgressIndicator(
-                        valueColor:
-                            AlwaysStoppedAnimation<Color>(Colors.deepPurple),
-                      )
-                    : SizedBox(
-                        width: double.infinity,
-                        height: 56,
-                        child: ElevatedButton(
-                          onPressed: _salvarEncomenda,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.deepPurple,
-                            foregroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            elevation: 2,
-                          ),
-                          child: const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.save, size: 20),
-                              SizedBox(width: 8),
-                              Text(
-                                'Salvar Encomenda',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                  // Botão de salvar
+                  _isUpdating
+                      ? CircularProgressIndicator(
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.deepPurple),
+                        )
+                      : SizedBox(
+                          width: double.infinity,
+                          height: 56,
+                          child: ElevatedButton(
+                            onPressed: _salvarEncomenda,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.deepPurple,
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
                               ),
-                            ],
+                              elevation: 2,
+                            ),
+                            child: const Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.save, size: 20),
+                                SizedBox(width: 8),
+                                Text(
+                                  'Salvar Encomenda',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
