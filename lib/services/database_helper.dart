@@ -1,6 +1,5 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
-//import 'package:path_provider/path_provider.dart';
 import '../models/encomenda.dart';
 
 class DatabaseHelper {
@@ -21,9 +20,9 @@ class DatabaseHelper {
 
     return await openDatabase(
       path,
-      version: 2,
+      version: 2, // Versão aumentada para 2
       onCreate: _createDB,
-      onUpgrade: _onUpgrade, // Adicione esta linha
+      onUpgrade: _onUpgrade,
     );
   }
 
@@ -41,38 +40,53 @@ class DatabaseHelper {
     ''');
   }
 
-// E adicione o método onUpgrade:
-  static Future<void> _onUpgrade(
-      Database db, int oldVersion, int newVersion) async {
+  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
     if (oldVersion < 2) {
-      await db.execute(
-          'ALTER TABLE encomendas ADD COLUMN arquivada INTEGER NOT NULL DEFAULT 0');
+      try {
+        await db.execute(
+            'ALTER TABLE encomendas ADD COLUMN arquivada INTEGER NOT NULL DEFAULT 0');
+      } catch (e) {
+        // Se a coluna já existir, ignora o erro
+        print('Coluna arquivada já existe: $e');
+      }
     }
   }
 
   Future<int> inserirEncomenda(Encomenda encomenda) async {
-    final db = await instance.database;
-    //await Future.delayed(Duration(seconds: 80));
+    final db = await database;
     return await db.insert(
       'encomendas',
       encomenda.toJson(),
-      conflictAlgorithm: ConflictAlgorithm.replace, // Evita erros de duplicação
+      conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
 
+  // Método antigo - mantenha para compatibilidade se necessário
   Future<List<Encomenda>> listarEncomendas() async {
-    final db = await instance.database;
+    final db = await database;
     final result = await db.query('encomendas');
     return result.map((json) => Encomenda.fromJson(json)).toList();
   }
 
-// Listar encomendas não arquivadas (para a tela principal)
+  // Listar encomendas não arquivadas (para a tela principal)
   Future<List<Encomenda>> listarEncomendasNaoArquivadas() async {
     final db = await database;
     final result = await db.query(
       'encomendas',
       where: 'arquivada = ?',
       whereArgs: [0],
+      orderBy: 'id DESC',
+    );
+    return result.map((json) => Encomenda.fromJson(json)).toList();
+  }
+
+  // Listar encomendas arquivadas
+  Future<List<Encomenda>> listarEncomendasArquivadas() async {
+    final db = await database;
+    final result = await db.query(
+      'encomendas',
+      where: 'arquivada = ?',
+      whereArgs: [1],
       orderBy: 'id DESC',
     );
     return result.map((json) => Encomenda.fromJson(json)).toList();
@@ -89,18 +103,6 @@ class DatabaseHelper {
     );
   }
 
-// Listar encomendas arquivadas
-  Future<List<Encomenda>> listarEncomendasArquivadas() async {
-    final db = await database;
-    final result = await db.query(
-      'encomendas',
-      where: 'arquivada = ?',
-      whereArgs: [1],
-      orderBy: 'id DESC',
-    );
-    return result.map((json) => Encomenda.fromJson(json)).toList();
-  }
-
   // Método para desarquivar uma encomenda
   Future<int> desarquivarEncomenda(int id) async {
     final db = await database;
@@ -113,17 +115,23 @@ class DatabaseHelper {
   }
 
   Future<int> deletarEncomenda(int id) async {
-    final db = await instance.database;
+    final db = await database;
     return await db.delete('encomendas', where: 'id = ?', whereArgs: [id]);
   }
 
   Future<int> atualizarStatus(int id, String novoStatus) async {
-    final db = await instance.database;
+    final db = await database;
     return await db.update(
       'encomendas',
       {'status': novoStatus},
       where: 'id = ?',
       whereArgs: [id],
     );
+  }
+
+  // Método para fechar o banco de dados (útil para testes)
+  Future<void> close() async {
+    final db = await database;
+    db.close();
   }
 }

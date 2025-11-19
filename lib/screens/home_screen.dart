@@ -21,7 +21,6 @@ class HomeScreenState extends State<HomeScreen> {
     _carregarEncomendas();
   }
 
-  // No método _carregarEncomendas, use o novo método:
   Future<void> _carregarEncomendas() async {
     final encomendas =
         await DatabaseHelper.instance.listarEncomendasNaoArquivadas();
@@ -56,13 +55,45 @@ class HomeScreenState extends State<HomeScreen> {
     _carregarEncomendas();
   }
 
-// Adicione o método para arquivar encomendas:
   void _arquivarEncomenda(int id) async {
     await DatabaseHelper.instance.arquivarEncomenda(id);
     _carregarEncomendas();
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Encomenda arquivada!')),
     );
+  }
+
+  Future<bool> _confirmarExclusao(int id) async {
+    final confirmado = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Confirmar exclusão'),
+        content: const Text(
+            'Tem certeza que deseja excluir esta encomenda? Esta ação não pode ser desfeita.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text(
+              'Excluir',
+              style: TextStyle(color: Colors.red),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmado == true) {
+      _deletarEncomenda(id);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Encomenda excluída!')),
+      );
+      return true;
+    }
+    return false;
   }
 
   @override
@@ -94,8 +125,7 @@ class HomeScreenState extends State<HomeScreen> {
         title: Text(
           'Minhas Encomendas',
           style: theme.textTheme.titleLarge?.copyWith(
-            color:
-                const Color.fromARGB(255, 255, 255, 255), // Adicione esta linha
+            color: const Color.fromARGB(255, 255, 255, 255),
           ),
         ),
         actions: <Widget>[
@@ -132,7 +162,6 @@ class HomeScreenState extends State<HomeScreen> {
                 Navigator.pop(context);
               },
             ),
-            // No Drawer, atualize o item "arquivados":
             ListTile(
               title: const Text('Arquivados'),
               leading: const Icon(Icons.archive),
@@ -202,12 +231,24 @@ class HomeScreenState extends State<HomeScreen> {
                   children: _encomendas.map((encomenda) {
                     return Dismissible(
                       key: Key(encomenda.id.toString()),
-                      direction: DismissDirection.endToStart,
+                      direction: DismissDirection.horizontal,
                       background: Container(
+                        alignment: Alignment.centerLeft,
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        color: Colors.red,
+                        child: const Row(
+                          children: [
+                            Icon(Icons.delete, color: Colors.white),
+                            SizedBox(width: 8),
+                            Text('Excluir',
+                                style: TextStyle(color: Colors.white)),
+                          ],
+                        ),
+                      ),
+                      secondaryBackground: Container(
                         alignment: Alignment.centerRight,
                         padding: const EdgeInsets.symmetric(horizontal: 20),
-                        color: Colors
-                            .orange, // Mudei a cor para laranja (arquivar)
+                        color: Colors.orange,
                         child: const Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
@@ -218,7 +259,14 @@ class HomeScreenState extends State<HomeScreen> {
                           ],
                         ),
                       ),
-                      onDismissed: (_) => _arquivarEncomenda(encomenda.id!),
+                      confirmDismiss: (direction) async {
+                        if (direction == DismissDirection.startToEnd) {
+                          return await _confirmarExclusao(encomenda.id!);
+                        } else {
+                          _arquivarEncomenda(encomenda.id!);
+                          return false;
+                        }
+                      },
                       child: Card(
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16)),
@@ -241,17 +289,37 @@ class HomeScreenState extends State<HomeScreen> {
                             style: TextStyle(
                                 color: Colors.grey.shade700, height: 1.4),
                           ),
-                          // No trailing do ListTile, substitua o botão de deletar por arquivar:
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                icon: Icon(Icons.archive, color: Colors.orange),
-                                onPressed: () =>
-                                    _arquivarEncomenda(encomenda.id!),
-                                tooltip: 'Arquivar encomenda',
+                          trailing: PopupMenuButton<String>(
+                            icon:
+                                const Icon(Icons.more_vert, color: Colors.grey),
+                            onSelected: (value) {
+                              if (value == 'arquivar') {
+                                _arquivarEncomenda(encomenda.id!);
+                              } else if (value == 'excluir') {
+                                _confirmarExclusao(encomenda.id!);
+                              }
+                            },
+                            itemBuilder: (BuildContext context) => [
+                              const PopupMenuItem<String>(
+                                value: 'arquivar',
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.archive, color: Colors.orange),
+                                    SizedBox(width: 8),
+                                    Text('Arquivar'),
+                                  ],
+                                ),
                               ),
-                              Icon(Icons.chevron_right, color: Colors.grey),
+                              const PopupMenuItem<String>(
+                                value: 'excluir',
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.delete, color: Colors.red),
+                                    SizedBox(width: 8),
+                                    Text('Excluir'),
+                                  ],
+                                ),
+                              ),
                             ],
                           ),
                           onTap: () => _abrirDetalhes(encomenda),
@@ -270,8 +338,7 @@ class HomeScreenState extends State<HomeScreen> {
         label: const Text(
           'Adicionar',
           style: TextStyle(
-            color: Color.fromARGB(
-                255, 255, 255, 255), // Já está cinza, mas pode alterar
+            color: Color.fromARGB(255, 255, 255, 255),
           ),
         ),
         icon: const Icon(
@@ -283,7 +350,6 @@ class HomeScreenState extends State<HomeScreen> {
   }
 }
 
-// Classe auxiliar movida para fora ou mantida como interna
 class _ResumoCard extends StatelessWidget {
   final IconData icon;
   final String label;
