@@ -3,6 +3,7 @@ import '../models/encomenda.dart';
 import '../services/database_helper.dart';
 import 'add_encomenda_screen.dart';
 import 'detalhes_encomenda_screen.dart';
+import 'archived_encomendas_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -20,8 +21,10 @@ class HomeScreenState extends State<HomeScreen> {
     _carregarEncomendas();
   }
 
+  // No método _carregarEncomendas, use o novo método:
   Future<void> _carregarEncomendas() async {
-    final encomendas = await DatabaseHelper.instance.listarEncomendas();
+    final encomendas =
+        await DatabaseHelper.instance.listarEncomendasNaoArquivadas();
     setState(() {
       _encomendas = encomendas;
     });
@@ -51,6 +54,15 @@ class HomeScreenState extends State<HomeScreen> {
   void _deletarEncomenda(int id) async {
     await DatabaseHelper.instance.deletarEncomenda(id);
     _carregarEncomendas();
+  }
+
+// Adicione o método para arquivar encomendas:
+  void _arquivarEncomenda(int id) async {
+    await DatabaseHelper.instance.arquivarEncomenda(id);
+    _carregarEncomendas();
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Encomenda arquivada!')),
+    );
   }
 
   @override
@@ -120,10 +132,17 @@ class HomeScreenState extends State<HomeScreen> {
                 Navigator.pop(context);
               },
             ),
+            // No Drawer, atualize o item "arquivados":
             ListTile(
-              title: const Text('arquivados'),
+              title: const Text('Arquivados'),
+              leading: const Icon(Icons.archive),
               onTap: () {
                 Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const ArchivedEncomendasScreen()),
+                );
               },
             ),
           ],
@@ -187,10 +206,19 @@ class HomeScreenState extends State<HomeScreen> {
                       background: Container(
                         alignment: Alignment.centerRight,
                         padding: const EdgeInsets.symmetric(horizontal: 20),
-                        color: Colors.redAccent,
-                        child: const Icon(Icons.delete, color: Colors.white),
+                        color: Colors
+                            .orange, // Mudei a cor para laranja (arquivar)
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text('Arquivar',
+                                style: TextStyle(color: Colors.white)),
+                            SizedBox(width: 8),
+                            Icon(Icons.archive, color: Colors.white),
+                          ],
+                        ),
                       ),
-                      onDismissed: (_) => _deletarEncomenda(encomenda.id!),
+                      onDismissed: (_) => _arquivarEncomenda(encomenda.id!),
                       child: Card(
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16)),
@@ -213,14 +241,15 @@ class HomeScreenState extends State<HomeScreen> {
                             style: TextStyle(
                                 color: Colors.grey.shade700, height: 1.4),
                           ),
-                          // CORREÇÃO: Removido o trailing duplicado
+                          // No trailing do ListTile, substitua o botão de deletar por arquivar:
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               IconButton(
-                                icon: Icon(Icons.delete, color: Colors.red),
+                                icon: Icon(Icons.archive, color: Colors.orange),
                                 onPressed: () =>
-                                    _deletarEncomenda(encomenda.id!),
+                                    _arquivarEncomenda(encomenda.id!),
+                                tooltip: 'Arquivar encomenda',
                               ),
                               Icon(Icons.chevron_right, color: Colors.grey),
                             ],

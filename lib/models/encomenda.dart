@@ -5,6 +5,7 @@ class Encomenda {
   final String transportadora;
   String status; // Agora não é final
   final String? dataCriacao;
+  bool arquivada; // Novo campo
 
   Encomenda({
     this.id,
@@ -13,6 +14,7 @@ class Encomenda {
     required this.transportadora,
     required this.status,
     required this.dataCriacao,
+    this.arquivada = false, // Por padrão, não arquivada
   });
 
   // Método factory para criar uma instância de Encomenda a partir de um JSON
@@ -24,6 +26,7 @@ class Encomenda {
       transportadora: json['transportadora'],
       status: json['status'],
       dataCriacao: json['dataCriacao'],
+      arquivada: json['arquivada'] == 1, // Convertendo de inteiro para bool
     );
   }
 
@@ -36,6 +39,7 @@ class Encomenda {
       'transportadora': transportadora,
       'status': status,
       'dataCriacao': dataCriacao,
+      'arquivada': arquivada ? 1 : 0, // No SQLite, usamos 0 e 1 para booleanos
     };
   }
 }
